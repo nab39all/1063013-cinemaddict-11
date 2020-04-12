@@ -1,5 +1,7 @@
+'use strict';
 const CARDS_COUNT = 5; // кол-во отрисованых карточек
-const CARDS_COUNT_EXTRA = 2; //кол-во карточек в блоках «Top rated» и «Most commented»
+// const CARDS_COUNT_EXTRA = 2; // кол-во карточек в блоках «Top rated» и «Most commented»
+// const CONTAINERS_COUNT_EXTRA = 2; // кол-во контейнеров с карточками
 
 const createHeaderProfileTemplate = () => {
   return (
@@ -187,16 +189,57 @@ const createFilmDetailsPopUpTemplate = () => {
   );
 };
 
+const createFilmListTemplate = () => {
+  return (
+    `<section class="films">
+      <section class="films-list">
+        <h2 class="films-list__title visually-hidden">All movies. Upcoming</h2>
+      </section>
+    </section>`
+  );
+};
+
+// const createExtraFilmListTemplate = () => {
+//   return (
+//     `<section class="films-list--extra">
+//       <h2 class="films-list__title">#TITLE</h2>
+//     </section>`
+//   );
+// };
+
+const createFilmCardsContainerTemplate = () => {
+  return (
+    `<div class="films-list__container"></div>`
+  );
+};
+
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
+
 render(siteHeader, createHeaderProfileTemplate(), `beforeend`);
 render(siteMain, createMainMenuTemplate(), `beforeend`);
-for(let i = 0; i < CARDS_COUNT; i++){
-  render(siteMain, createFilmCardTemplate(), `beforeend`);
+
+render(siteMain, createFilmListTemplate(), `beforeend`);
+const filmsList = siteMain.querySelector(`.films-list`);
+render(filmsList, createFilmCardsContainerTemplate(), `beforeend`);
+const mainFilmsListContainer = filmsList.querySelector(`.films-list__container`);
+for (let i = 0; i < CARDS_COUNT; i++) {
+  render(mainFilmsListContainer, createFilmCardTemplate(), `beforeend`);
 }
-render(siteMain, createShowMoreBtnTemplate(), `beforeend`);
-render(siteMain, createFilmDetailsPopUpTemplate(), 'beforeend');
+render(filmsList, createShowMoreBtnTemplate(), `beforeend`);
+// const filmsContainer = siteMain.querySelector(`.films`);
+// for (let i = 0; i < CONTAINERS_COUNT_EXTRA; i++) {
+//   render(filmsContainer, createExtraFilmListTemplate(), `beforeend`);
+// }
+// const filmsListExtra = filmsContainer.querySelectorAll(`.films-list--extra`);
+// render(filmsListExtra, createFilmCardsContainerTemplate(), `beforeend`);
+// const filmsListExtraContainer = filmsListExtra.querySelector(`.films-list__container`);
+// for (let i = 0; i < CARDS_COUNT_EXTRA; i++) {
+//   render(filmsListExtraContainer, createFilmCardTemplate(), `beforeend`);
+// }
+
+render(siteMain, createFilmDetailsPopUpTemplate(), `beforeend`);
