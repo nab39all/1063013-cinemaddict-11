@@ -1,6 +1,6 @@
 'use strict';
 const CARDS_COUNT = 5; // кол-во отрисованых карточек
-const CARDS_COUNT_EXTRA = 2; // кол-во карточек в блоках «Top rated» и «Most commented»
+const CARDS_COUNT_EXTRA = 2; // кол-во карточек в блоках Top rated и Most commented
 
 const createHeaderProfileTemplate = () => {
   return (
