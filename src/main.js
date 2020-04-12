@@ -25,6 +25,16 @@ const createMainMenuTemplate = () => {
   );
 };
 
+const createSortTemplate = () => {
+  return (
+    `<ul class="sort">
+      <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
+      <li><a href="#" class="sort__button">Sort by date</a></li>
+      <li><a href="#" class="sort__button">Sort by rating</a></li>
+    </ul>`
+  );
+};
+
 const createFilmCardTemplate = () => {
   return (
     `<article class="film-card">
@@ -250,33 +260,45 @@ const createFilmCardsContainerTemplate = () => {
   );
 };
 
+const createFooterStatisticTemplate = () => {
+  return (
+    `<section class="footer__statistics">
+      <p>130 291 movies inside</p>
+    </section>`
+  );
+};
+
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
-render(siteHeader, createHeaderProfileTemplate(), `beforeend`);
-render(siteMain, createMainMenuTemplate(), `beforeend`);
-render(siteMain, createFilmListTemplate(), `beforeend`);
+render(siteHeader, createHeaderProfileTemplate());
+render(siteMain, createMainMenuTemplate());
+render(siteMain, createSortTemplate());
+render(siteMain, createFilmListTemplate());
 
 const filmsList = siteMain.querySelector(`.films-list`);
-render(filmsList, createFilmCardsContainerTemplate(), `beforeend`);
+render(filmsList, createFilmCardsContainerTemplate());
 const mainFilmsListContainer = filmsList.querySelector(`.films-list__container`);
 for (let i = 0; i < CARDS_COUNT; i++) {
-  render(mainFilmsListContainer, createFilmCardTemplate(), `beforeend`);
+  render(mainFilmsListContainer, createFilmCardTemplate());
 }
-render(filmsList, createShowMoreBtnTemplate(), `beforeend`);
+render(filmsList, createShowMoreBtnTemplate());
 
 const extraFilmsList = siteMain.querySelectorAll(`.films-list--extra`);
 const [topRatedFilmsList, mostCommentedFilmsList] = extraFilmsList;
-render(topRatedFilmsList, createFilmCardsContainerTemplate(), `beforeend`);
-render(mostCommentedFilmsList, createFilmCardsContainerTemplate(), `beforeend`);
+render(topRatedFilmsList, createFilmCardsContainerTemplate());
+render(mostCommentedFilmsList, createFilmCardsContainerTemplate());
 const topRatedFilmsListContainer = topRatedFilmsList.querySelector(`.films-list__container`);
 const mostCommentedFilmsListContainer = mostCommentedFilmsList.querySelector(`.films-list__container`);
 for (let i = 0; i < CARDS_COUNT_EXTRA; i++) {
-  render(topRatedFilmsListContainer, createFilmCardTemplate(), `beforeend`);
-  render(mostCommentedFilmsListContainer, createFilmCardTemplate(), `beforeend`);
+  render(topRatedFilmsListContainer, createFilmCardTemplate());
+  render(mostCommentedFilmsListContainer, createFilmCardTemplate());
 }
 
-render(siteMain, createFilmDetailsPopUpTemplate(), `beforeend`);
+const siteFooter = document.querySelector(`.footer`);
+render(siteFooter, createFooterStatisticTemplate());
+
+render(siteMain, createFilmDetailsPopUpTemplate());
