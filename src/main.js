@@ -11,6 +11,8 @@ import {createFilmListTemplate} from './components/film-list';
 import {createFilmCardsContainerTemplate} from './components/film-card-container';
 import {createFooterStatisticTemplate} from './components/footer-statistic';
 
+import {generateFilters} from './mock/main-menu';
+
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
@@ -18,7 +20,9 @@ const render = (container, template, place = `beforeend`) => {
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
 render(siteHeader, createHeaderProfileTemplate());
-render(siteMain, createMainMenuTemplate());
+
+const filters = generateFilters();
+render(siteMain, createMainMenuTemplate(filters));
 render(siteMain, createSortTemplate());
 render(siteMain, createFilmListTemplate());
 
