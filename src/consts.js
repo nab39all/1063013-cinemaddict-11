@@ -6,4 +6,6 @@ const TITLES = [`Made for each other`, `Popeye meets Sinbad`, `Sagenbrush trail`
   `Santa Claus conquers the Martians`, `The dance of life`,
   `The great Flamarion`, `The man with the golden arm`];
 
-export {GENRES, POSTERS, TITLES};
+const SMILES = [`angry.png`, `puke.png`, `sleeping.png`, `smile.png`];
+
+export {GENRES, POSTERS, TITLES, SMILES};

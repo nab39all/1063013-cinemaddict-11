@@ -10,9 +10,13 @@ import {createFooterStatisticTemplate} from './components/footer-statistic';
 
 import {generateFilters} from './mock/main-menu';
 import {generateFilmCards} from './mock/film-card';
+import {generateProfileRaiting} from './mock/header-profile';
+import {generateMoviesCount} from './mock/footer-statistic';
 
-const CARDS_COUNT = 20; // кол-во отрисованых карточек
-const CARDS_COUNT_EXTRA = 2; // кол-во карточек в блоках Top rated и Most commented
+const CARDS_COUNT = 17;
+const CARDS_COUNT_EXTRA = 2;
+const SHOWING_CARDS_COUNT_ON_START = 5;
+const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 
 const render = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
@@ -20,7 +24,8 @@ const render = (container, template, place = `beforeend`) => {
 
 const siteMain = document.querySelector(`.main`);
 const siteHeader = document.querySelector(`.header`);
-render(siteHeader, createHeaderProfileTemplate());
+const profileRaiting = generateProfileRaiting();
+render(siteHeader, createHeaderProfileTemplate(profileRaiting));
 
 const filters = generateFilters();
 render(siteMain, createMainMenuTemplate(filters));
@@ -32,9 +37,11 @@ render(filmsList, createFilmCardsContainerTemplate());
 const mainFilmsListContainer = filmsList.querySelector(`.films-list__container`);
 
 const filmCards = generateFilmCards(CARDS_COUNT);
-for (let i = 0; i < CARDS_COUNT; i++) {
+let showingCardsCount = SHOWING_CARDS_COUNT_ON_START;
+for (let i = 0; i < showingCardsCount; i++) {
   render(mainFilmsListContainer, createFilmCardTemplate(filmCards[i]));
 }
+
 render(filmsList, createShowMoreBtnTemplate());
 
 const extraFilmsList = siteMain.querySelectorAll(`.films-list--extra`);
@@ -49,6 +56,20 @@ for (let i = 0; i < CARDS_COUNT_EXTRA; i++) {
 }
 
 const siteFooter = document.querySelector(`.footer`);
-render(siteFooter, createFooterStatisticTemplate());
+const moviesCount = generateMoviesCount();
+render(siteFooter, createFooterStatisticTemplate(moviesCount));
 
-render(siteMain, createFilmDetailsPopUpTemplate());
+render(siteMain, createFilmDetailsPopUpTemplate(filmCards[0]));
+
+const loadMoreButton = filmsList.querySelector(`.films-list__show-more`);
+
+loadMoreButton.addEventListener(`click`, () => {
+  const prevTasksCount = showingCardsCount;
+  showingCardsCount = showingCardsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+  filmCards.slice(prevTasksCount, showingCardsCount)
+    .forEach((filmCard) => render(mainFilmsListContainer, createFilmCardTemplate(filmCard), `beforeend`));
+  if (showingCardsCount >= filmCards.length) {
+    loadMoreButton.remove();
+  }
+});
