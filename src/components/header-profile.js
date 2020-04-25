@@ -1,10 +1,10 @@
-export const createHeaderProfileTemplate = (profileRaiting) => {
+export const createHeaderProfileTemplate = (profileRating) => {
   let userRank = ``;
-  if (profileRaiting <= 0) {
+  if (profileRating <= 0) {
     userRank = ``;
-  } else if (profileRaiting > 1 && profileRaiting <= 10) {
+  } else if (profileRating > 1 && profileRating <= 10) {
     userRank = `novice`;
-  } else if (profileRaiting > 10 && profileRaiting <= 20) {
+  } else if (profileRating > 10 && profileRating <= 20) {
     userRank = `fan`;
   } else {
     userRank = `movie buff`;
