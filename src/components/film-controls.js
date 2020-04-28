@@ -1,4 +1,6 @@
-export const createFilmControlsTemplate = (film) => {
+import {createElement} from '../utils';
+
+const createFilmControlsTemplate = (film) => {
   const {isInWatchList, isWatched, isFavorite} = film;
   const watchListButtonChecked = isInWatchList ? `checked` : ``;
   const watchedButtonChecked = isWatched ? `checked` : ``;
@@ -16,5 +18,28 @@ export const createFilmControlsTemplate = (film) => {
   </section>`
   );
 };
+
+export default class FilmControls {
+  constructor(film) {
+    this._film = film;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmControlsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
 

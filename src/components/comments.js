@@ -1,3 +1,5 @@
+import {createElement} from '../utils';
+
 const createCommentTemplate = (comment) => {
   const {emoji, text, author, date} = comment;
   return (
@@ -17,4 +19,25 @@ const createCommentTemplate = (comment) => {
   );
 };
 
-export {createCommentTemplate};
+export default class Comment {
+  constructor(comment) {
+    this._comment = comment;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createCommentTemplate(this._comment);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

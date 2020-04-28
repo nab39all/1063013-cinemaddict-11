@@ -1,4 +1,6 @@
-export const createHeaderProfileTemplate = (profileRating) => {
+import {createElement} from '../utils';
+
+const createHeaderProfileTemplate = (profileRating) => {
   let userRank = ``;
   if (profileRating <= 0) {
     userRank = ``;
@@ -16,3 +18,26 @@ export const createHeaderProfileTemplate = (profileRating) => {
     </section>`
   );
 };
+
+export default class HeaderProfile {
+  constructor(profileRating) {
+    this._profileRating = profileRating;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createHeaderProfileTemplate(this._profileRating);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,4 +1,6 @@
-export const createMainMenuTemplate = (watchStats) => {
+import {createElement} from '../utils';
+
+const createMainMenuTemplate = (watchStats) => {
   const {watchlist, history, favorites} = watchStats;
   return (
     `<nav class="main-navigation">
@@ -12,3 +14,26 @@ export const createMainMenuTemplate = (watchStats) => {
     </nav>`
   );
 };
+
+export default class MainMenu {
+  constructor(watchStats) {
+    this._watchStats = watchStats;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMainMenuTemplate(this._watchStats);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,8 +1,10 @@
+import {createElement} from '../utils';
 import {formatDuration} from '../utils';
+
 const GENRE_MAIN = 0;
 const MAX_DESCRIPTION_LENGTH = 140;
 
-export const createFilmCardTemplate = (film) => {
+const createFilmCardTemplate = (film) => {
   const {poster, title, rating, release, duration, genres, description, comments, isInWatchList, isWatched, isFavorite} = film;
   const watchListButtonChecked = isInWatchList ? `film-card__controls-item--active` : ``;
   const watchedButtonChecked = isWatched ? `film-card__controls-item--active` : ``;
@@ -29,3 +31,26 @@ export const createFilmCardTemplate = (film) => {
     </article>`
   );
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

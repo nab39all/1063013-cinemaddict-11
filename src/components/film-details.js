@@ -1,4 +1,4 @@
-import {formatDuration} from '../utils';
+import {createElement, formatDuration} from '../utils';
 
 const createFilmDetailsTemplate = (film) => {
   const {poster, age, title, originalTitle, rating, director, writers, actors
@@ -69,4 +69,25 @@ const createFilmDetailsTemplate = (film) => {
   );
 };
 
-export {createFilmDetailsTemplate};
+export default class FilmDetails {
+  constructor(film) {
+    this._film = film;
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmDetailsTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

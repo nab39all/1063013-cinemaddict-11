@@ -61,6 +61,13 @@ const getRandomArray = (array, minLength, maxLength) => {
   return getShuffledArray(array)
   .slice(0, getRandomIntegerNumber(minLength, maxLength));
 };
+
+export const createElement = (template) => {
+  const newElement = document.createElement(`div`);
+  newElement.innerHTML = template;
+
+  return newElement.firstChild;
+}
 export {
   formatDuration,
   getRandomIntegerNumber,
