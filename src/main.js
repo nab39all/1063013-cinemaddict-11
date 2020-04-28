@@ -1,17 +1,17 @@
-import {createHeaderProfileTemplate} from './components/header-profile';
-import {createMainMenuTemplate} from './components/main-menu';
-import {createSortTemplate} from './components/sort';
-import {createFilmCardTemplate} from './components/film-card';
-import {createShowMoreBtnTemplate} from './components/show-more-btn';
-import {createFilmListTemplate} from './components/film-list';
-import {createFilmCardsContainerTemplate} from './components/film-card-container';
-import {createFooterStatisticTemplate} from './components/footer-statistic';
+import HeaderProfileComponent from './components/header-profile';
+import MainMenuComponent from './components/main-menu';
+import SortComponent from './components/sort';
+import FilmCardComponent from './components/film-card';
+import ShowMoreBtnComponent from './components/show-more-btn';
+import FilmListComponent from './components/film-list';
+import FilmCardContainerComponent from './components/film-card-container';
+import FooterStatisticComponent from './components/footer-statistic';
 
-import {createFilmDetailsPopUpTemplate} from './components/film-details-popup';
-import {createFilmDetailsTemplate} from './components/film-details';
-import {createFilmControlsTemplate} from './components/film-controls';
-import {createCommentTemplate} from "./components/comments.js";
-import {createNewCommentTemplate} from './components/new-comment';
+import FilmDetailsPopupComponent from './components/film-details-popup';
+import FilmDetails from './components/film-details';
+import FilmControlsComponent from './components/film-controls';
+import CommentComponent from './components/comment';
+import NewCommentComponent from './components/new-comment';
 
 import {generateFilmCards} from './mock/film-card';
 
