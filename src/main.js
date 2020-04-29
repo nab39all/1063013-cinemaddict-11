@@ -8,8 +8,6 @@ import FilmCardContainerComponent from './components/film-card-container';
 import FooterStatisticComponent from './components/footer-statistic';
 
 import FilmDetailsPopupComponent from './components/film-details-popup';
-import CommentComponent from './components/comment';
-import NewCommentComponent from './components/new-comment';
 
 import {generateFilmCards} from './mock/film-card';
 
@@ -108,25 +106,6 @@ renderExtraFilms();
 
 const siteFooter = document.querySelector(`.footer`);
 render(siteFooter, new FooterStatisticComponent(filmCards.length).getElement(), RenderPosition.BEFOREEND);
-
-// const renderFilmDetails = (film) => {
-
-//   render(siteFooter, createFilmDetailsPopUpTemplate(film), `afterend`);
-
-//   const filmDetailsElement = document.querySelector(`.film-details`);
-//   const filmDetailsTopContainerElement = filmDetailsElement.querySelector(`.form-details__top-container`);
-//   const filmDetailsCommentsElement = filmDetailsElement.querySelector(`.film-details__comments-wrap`);
-//   const filmDetailsCommentsListElement = filmDetailsCommentsElement.querySelector(`.film-details__comments-list`);
-
-//   render(filmDetailsTopContainerElement, createFilmDetailsTemplate(film));
-//   render(filmDetailsTopContainerElement, createFilmControlsTemplate(film));
-//   render(filmDetailsCommentsElement, createNewCommentTemplate());
-
-//   film.comments.forEach((comment) => render(filmDetailsCommentsListElement, createCommentTemplate(comment)));
-// };
-
-// renderFilmDetails(filmCards[0]);
-
 
 // Пока что рендерит не все
 render(siteFooter, new FilmDetailsPopupComponent(filmCards[0]).getElement(), RenderPosition.BEFOREEND);

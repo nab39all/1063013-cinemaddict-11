@@ -1,6 +1,4 @@
-import {createElement} from '../utils';
-
-import {formatDuration} from '../utils';
+import {createElement, formatDuration} from '../utils';
 
 const createFilmDetailsMarkup = (film) => {
   const {poster, age, title, originalTitle, rating, director, writers, actors
@@ -90,22 +88,60 @@ const createFilmControlsMarkup = (film) => {
   );
 };
 
-const createCommentMarkup = (comment) => {
-  const {emoji, text, author, date} = comment;
+const createCommentsMarkup = (comments) => {
+  return comments.map((comment) => {
+    const {emoji, text, author, date} = comment;
+    return (`
+      <li class="film-details__comment">
+        <span class="film-details__comment-emoji">
+          <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-${emoji}">
+        </span>
+        <div>
+          <p class="film-details__comment-text">${text}</p>
+          <p class="film-details__comment-info">
+            <span class="film-details__comment-author">${author}</span>
+            <span class="film-details__comment-day">${date.getMinutes()}</span>
+            <button class="film-details__comment-delete">Delete</button>
+          </p>
+        </div>
+      </li>
+    `);
+  }).join(`\n`);
+};
+
+const createNewCommentMarkup = () => {
   return (
-    `<li class="film-details__comment">
-      <span class="film-details__comment-emoji">
-        <img src="./images/emoji/${emoji}.png" width="55" height="55" alt="emoji-smile">
-      </span>
-      <div>
-        <p class="film-details__comment-text">${text}</p>
-        <p class="film-details__comment-info">
-          <span class="film-details__comment-author">${author}</span>
-          <span class="film-details__comment-day">${date}</span>
-          <button class="film-details__comment-delete">Delete</button>
-        </p>
-      </div>
-    </li>`
+    `<div class="film-details__new-comment">
+    <div for="add-emoji" class="film-details__add-emoji-label">
+      <img src="images/emoji/smile.png" width="55" height="55" alt="emoji-smile">
+    </div>
+
+    <label class="film-details__comment-label">
+      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment">Great movie!</textarea>
+    </label>
+
+    <div class="film-details__emoji-list">
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile" checked="">
+      <label class="film-details__emoji-label" for="emoji-smile">
+        <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+      </label>
+
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+      <label class="film-details__emoji-label" for="emoji-sleeping">
+        <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+      </label>
+
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+      <label class="film-details__emoji-label" for="emoji-puke">
+        <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+      </label>
+
+      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+      <label class="film-details__emoji-label" for="emoji-angry">
+        <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+      </label>
+    </div>
+  </div>`
   );
 };
 
@@ -113,7 +149,8 @@ const createFilmDetailsPopupTemplate = (film) => {
   const {comments} = film;
   const filmDetailsMarkup = createFilmDetailsMarkup(film);
   const filmConrolsMarkup = createFilmControlsMarkup(film);
-  const commentsMarkup = createCommentMarkup(film.comments);
+  const commentsMarkup = createCommentsMarkup(comments);
+  const newCommentMarkup = createNewCommentMarkup();
   return (
     `<section class="film-details">
        <form class="film-details__inner" action="" method="get">
@@ -130,6 +167,7 @@ const createFilmDetailsPopupTemplate = (film) => {
              <ul class="film-details__comments-list">
                 ${commentsMarkup}
              </ul>
+            ${newCommentMarkup}
            </section>
          </div>
        </form>
