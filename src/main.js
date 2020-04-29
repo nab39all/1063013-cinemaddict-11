@@ -8,8 +8,6 @@ import FilmCardContainerComponent from './components/film-card-container';
 import FooterStatisticComponent from './components/footer-statistic';
 
 import FilmDetailsPopupComponent from './components/film-details-popup';
-import FilmDetails from './components/film-details';
-import FilmControlsComponent from './components/film-controls';
 import CommentComponent from './components/comment';
 import NewCommentComponent from './components/new-comment';
 
@@ -45,8 +43,8 @@ const renderMainMenu = () => {
   const watchStats = getWatchStats();
   render(siteMain, new MainMenuComponent(watchStats).getElement(), RenderPosition.BEFOREEND);
 };
-
 renderMainMenu();
+
 render(siteMain, new SortComponent().getElement(), RenderPosition.BEFOREEND);
 render(siteMain, new FilmListComponent().getElement(), RenderPosition.BEFOREEND);
 
@@ -130,3 +128,5 @@ render(siteFooter, new FooterStatisticComponent(filmCards.length).getElement(), 
 // renderFilmDetails(filmCards[0]);
 
 
+// Пока что рендерит не все
+render(siteFooter, new FilmDetailsPopupComponent(filmCards[0]).getElement(), RenderPosition.BEFOREEND);
