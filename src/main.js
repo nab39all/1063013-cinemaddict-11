@@ -13,8 +13,9 @@ import FilmDetailsPopupComponent from './components/film-details-popup';
 import {generateFilmCards} from './mock/film-card';
 
 import {render, RenderPosition} from './utils';
+import NoFilmsComponent from './components/no-films';
 
-const CARDS_COUNT = 23;
+const CARDS_COUNT = 10;
 const SHOWING_CARDS_COUNT_ON_START = 5;
 const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
 
@@ -84,6 +85,14 @@ const renderFilmCard = (filmListElement, film) => {
 };
 
 const renderFilmsLists = (filmsComponent, films) => {
+
+  const filmsContainer = siteMain.querySelector(`.films`);
+
+  if (films.length === 0) {
+    filmsContainer.removeChild(filmsContainer.querySelector(`.films-list`));
+    render(filmsContainer, new NoFilmsComponent().getElement(), RenderPosition.BEFOREEND);
+    return;
+  }
   render(filmsComponent.getElement(), new FilmListComponent().getElement(), RenderPosition.BEFOREEND);
 
   const filmListElement = siteMain.querySelector(`.films-list`);
