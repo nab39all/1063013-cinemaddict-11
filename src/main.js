@@ -80,18 +80,10 @@ const renderFilmCard = (filmListElement, film) => {
   };
 
   const filmComponent = new FilmCardComponent(film);
-  const filmCardPosterElement = filmComponent.getElement().querySelector(`.film-card__poster`);
-  const filmTitleElement = filmComponent.getElement().querySelector(`.film-card__title`);
-  const filmCommentsElement = filmComponent.getElement().querySelector(`.film-card__comments`);
-
-  filmCardPosterElement.addEventListener(`click`, onFilmCardClick);
-  filmTitleElement.addEventListener(`click`, onFilmCardClick);
-  filmCommentsElement.addEventListener(`click`, onFilmCardClick);
+  filmComponent.setFilmCardClickHandler(onFilmCardClick);
 
   const filmDetailsPopupComponent = new FilmDetailsPopupComponent(film);
-  const closePopupButton = filmDetailsPopupComponent.getElement().querySelector(`.film-details .film-details__close-btn`);
-
-  closePopupButton.addEventListener(`click`, onCloseButtonClick);
+  filmDetailsPopupComponent.setPopupCloseButtonClickHandler(onCloseButtonClick);
 
   render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
@@ -124,7 +116,7 @@ const renderFilmsLists = (filmsComponent, films) => {
 
   render(filmListElement, showMoreButtonComponent, `beforeend`);
 
-  showMoreButtonComponent.getElement().addEventListener(`click`, () => {
+  showMoreButtonComponent.setClickHandler(() => {
     const prevFilmCount = showingFilmsCount;
     showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
