@@ -12,7 +12,7 @@ import FilmDetailsPopupComponent from './components/film-details-popup';
 
 import {generateFilmCards} from './mock/film-card';
 
-import {render, RenderPosition} from './utils';
+import {render, RenderPosition} from './utils/common';
 import NoFilmsComponent from './components/no-films';
 
 const CARDS_COUNT = 10;

@@ -1,5 +1,5 @@
-import {createElement} from '../utils';
-import {MINUTES_IN_HOUR} from '../consts';
+import AbstractComponent from './abstract-component';
+import {MINUTES_IN_HOUR} from '../utils/consts';
 
 const createRankMarkup = (profileRating) => {
   let userRank = ``;
@@ -95,25 +95,14 @@ const createStatisticTemplate = (films) => {
   );
 };
 
-export default class Statistic {
+export default class Statistic extends AbstractComponent {
   constructor(films) {
-    this._films = films;
+    super();
 
-    this._element = null;
+    this._films = films;
   }
 
   getTemplate() {
     return createStatisticTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
