@@ -1,8 +1,5 @@
-import {
-  getRandomItem,
-  getRandomDate
-} from "../utils";
-import {DUMMY_TEXTS} from '../consts';
+import {getRandomItem, getRandomDate} from '../utils/common';
+import {DUMMY_TEXTS} from '../utils/consts';
 
 const COMMENT_AUTHORS = [`Jonh Doe`, `Bob Dode`, `Eman North`, `Hooly Gun`, `Scan Done`, `Tom Banle`, `Jakob Mitov`];
 const EMOJIS = [`angry`, `puke`, `sleeping`, `smile`];

@@ -3,7 +3,7 @@ import {
   POSTERS,
   TITLES,
   DUMMY_TEXTS
-} from '../consts';
+} from '../utils/consts';
 import {
   getRandomItem,
   getRandomItems,
@@ -11,7 +11,7 @@ import {
   getRandomBoolean,
   getRandomDate,
   getRandomArray
-} from '../utils';
+} from '../utils/common';
 
 import {generateComments} from './comment';
 
