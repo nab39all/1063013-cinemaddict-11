@@ -44,52 +44,54 @@ const renderFilmCard = (filmListElement, film) => {
   render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
 
-const renderFilmsLists = (filmsComponent, films) => {
-
-  const filmsContainer = siteMain.querySelector(`.films`);
-
-  if (films.length === 0) {
-    filmsContainer.removeChild(filmsContainer.querySelector(`.films-list`));
-    render(filmsContainer, new NoFilmsComponent(), RenderPosition.BEFOREEND);
-    return;
-  }
-  render(filmsComponent.getElement(), new FilmListComponent(), RenderPosition.BEFOREEND);
-
-  const filmListElement = siteMain.querySelector(`.films-list`);
-  render(filmListElement, new FilmCardContainerComponent(), RenderPosition.BEFOREEND);
-  const mainFilmsListContainer = filmListElement.querySelector(`.films-list__container`);
-
-  let showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
-
-  films
-    .slice(0, showingFilmsCount)
-    .forEach((film) => {
-      renderFilmCard(mainFilmsListContainer, film);
-    });
-
-
-  const showMoreButtonComponent = new ShowMoreBtnComponent();
-
-  render(filmListElement, showMoreButtonComponent, `beforeend`);
-
-  showMoreButtonComponent.setClickHandler(() => {
-    const prevFilmCount = showingFilmsCount;
-    showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
-
-    films.slice(prevFilmCount, showingFilmsCount)
-      .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
-    if (showingFilmsCount >= films.length) {
-      remove(showMoreButtonComponent);
-    }
-  });
-};
-
 export default class PageController {
   constructor(container) {
     this._container = container;
+
+    this._noFilmsComponent = new NoFilmsComponent();
+    this._filmListComponent = new FilmListComponent();
+    this._filmCardContainerComponent = new FilmCardContainerComponent();
+    this._showMoreBtnComponent = new ShowMoreBtnComponent();
   }
 
   render(films) {
-    renderFilmsLists(this._container, films);
+    const container = this._container;
+
+    const filmsContainer = siteMain.querySelector(`.films`);
+
+    if (films.length === 0) {
+      filmsContainer.removeChild(filmsContainer.querySelector(`.films-list`));
+      render(filmsContainer, this._noFilmsComponent, RenderPosition.BEFOREEND);
+      return;
+    }
+    render(container.getElement(), this._filmListComponent, RenderPosition.BEFOREEND);
+
+    const filmListElement = siteMain.querySelector(`.films-list`);
+    render(filmListElement, this._filmCardContainerComponent, RenderPosition.BEFOREEND);
+    const mainFilmsListContainer = filmListElement.querySelector(`.films-list__container`);
+
+    let showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
+
+    films
+      .slice(0, showingFilmsCount)
+      .forEach((film) => {
+        renderFilmCard(mainFilmsListContainer, film);
+      });
+
+
+    const showMoreButtonComponent = this._showMoreBtnComponent;
+
+    render(filmListElement, showMoreButtonComponent, `beforeend`);
+
+    showMoreButtonComponent.setClickHandler(() => {
+      const prevFilmCount = showingFilmsCount;
+      showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+      films.slice(prevFilmCount, showingFilmsCount)
+        .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
+      if (showingFilmsCount >= films.length) {
+        remove(showMoreButtonComponent);
+      }
+    });
   }
 }
