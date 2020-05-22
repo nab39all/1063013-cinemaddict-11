@@ -45,6 +45,12 @@ const renderFilmCard = (filmListElement, film) => {
   render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
 
+const renderFilmCards = (filmListElement, films) => {
+  films.forEach((film) => {
+    renderFilmCard(filmListElement, film);
+  });
+};
+
 const getSortedFilms = (films, sortType, from, to) => {
   let sortedFilms = [];
   const showingFilms = films.slice();
@@ -87,8 +93,9 @@ export default class PageController {
         const prevFilmCount = showingFilmsCount;
         showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
 
-        films.slice(prevFilmCount, showingFilmsCount)
-          .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
+        const sortedFilms = getSortedFilms(films, this._sortComponent.getSortType(), prevFilmCount, showingFilmsCount);
+        renderFilmCards(mainFilmsListContainer, sortedFilms);
+
         if (showingFilmsCount >= films.length) {
           remove(this._showMoreBtnComponent);
         }
@@ -114,11 +121,7 @@ export default class PageController {
     const mainFilmsListContainer = filmListElement.querySelector(`.films-list__container`);
 
     let showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
-    films
-      .slice(0, showingFilmsCount)
-      .forEach((film) => {
-        renderFilmCard(mainFilmsListContainer, film);
-      });
+    renderFilmCards(mainFilmsListContainer, films.slice(0, showingFilmsCount));
 
     renderShowMoreBtn();
 
@@ -126,15 +129,11 @@ export default class PageController {
 
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
       showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
-      const sortedFilms = getSortedFilms(films, sortType, 0, films.length);
+      const sortedFilms = getSortedFilms(films, sortType, 0, showingFilmsCount);
 
       mainFilmsListContainer.innerHTML = ``;
 
-      sortedFilms
-        .slice(0, showingFilmsCount)
-        .forEach((film) => {
-          renderFilmCard(mainFilmsListContainer, film);
-        });
+      renderFilmCards(mainFilmsListContainer, sortedFilms);
       renderShowMoreBtn();
     });
   }
