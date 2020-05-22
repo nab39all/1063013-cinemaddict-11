@@ -13,6 +13,7 @@ const remove = (component) => {
 const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
+  BEFOREBEGIN: `before`,
   AFTEREND: `after`
 };
 
@@ -23,6 +24,9 @@ const render = (container, component, place) => {
       break;
     case RenderPosition.BEFOREEND:
       container.append(component.getElement());
+      break;
+    case RenderPosition.BEFOREBEGIN:
+      container.before(component.getElement());
       break;
     case RenderPosition.AFTEREND:
       container.after(component.getElement());

@@ -86,6 +86,48 @@
 /************************************************************************/
 /******/ ({
 
+/***/ "./src/components/abstract-component.js":
+/*!**********************************************!*\
+  !*** ./src/components/abstract-component.js ***!
+  \**********************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return AbstractComponent; });
+/* harmony import */ var _utils_render__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/render */ "./src/utils/render.js");
+
+
+class AbstractComponent {
+  constructor() {
+    if (new.target === AbstractComponent) {
+      throw new Error(`Can't instantiate AbstractComponent, only concrete one.`);
+    }
+
+    this._element = null;
+  }
+
+  getTemplate() {
+    throw new Error(`Abstract method not implemented: getTemplate`);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = Object(_utils_render__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
+
+
+/***/ }),
+
 /***/ "./src/components/film-card-container.js":
 /*!***********************************************!*\
   !*** ./src/components/film-card-container.js ***!
@@ -96,7 +138,7 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FilmCardContainer; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
 
 
 const createFilmCardsContainerTemplate = () => {
@@ -105,24 +147,10 @@ const createFilmCardsContainerTemplate = () => {
   );
 };
 
-class FilmCardContainer {
-  constructor() {
-    this._element = null;
-  }
+class FilmCardContainer extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
   getTemplate() {
     return createFilmCardsContainerTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
@@ -139,7 +167,8 @@ class FilmCardContainer {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FilmCard; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
+/* harmony import */ var _utils_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/common */ "./src/utils/common.js");
 
 
 
@@ -158,7 +187,7 @@ const createFilmCardTemplate = (film) => {
       <p class="film-card__rating">${rating}</p>
       <p class="film-card__info">
         <span class="film-card__year">${release.getFullYear()}</span>
-        <span class="film-card__duration">${Object(_utils__WEBPACK_IMPORTED_MODULE_0__["formatDuration"])(duration)}</span>
+        <span class="film-card__duration">${Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["formatDuration"])(duration)}</span>
         <span class="film-card__genre">${genres[GENRE_MAIN]}</span>
       </p>
       <img src="./images/posters/${poster}" alt="" class="film-card__poster">
@@ -174,26 +203,26 @@ const createFilmCardTemplate = (film) => {
   );
 };
 
-class FilmCard {
+class FilmCard extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(film) {
-    this._film = film;
+    super();
 
-    this._element = null;
+    this._film = film;
   }
 
   getTemplate() {
     return createFilmCardTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
+  setFilmCardClickHandler(handler) {
+    this.getElement().querySelector(`.film-card__poster`)
+    .addEventListener(`click`, handler);
 
-  removeElement() {
-    this._element = null;
+    this.getElement().querySelector(`.film-card__title`)
+    .addEventListener(`click`, handler);
+
+    this.getElement().querySelector(`.film-card__comments`)
+    .addEventListener(`click`, handler);
   }
 }
 
@@ -210,7 +239,9 @@ class FilmCard {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FilmDetailsPopup; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
+/* harmony import */ var _utils_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/common */ "./src/utils/common.js");
+
 
 
 const createFilmDetailsMarkup = (film) => {
@@ -262,7 +293,7 @@ const createFilmDetailsMarkup = (film) => {
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Runtime</td>
-            <td class="film-details__cell">${Object(_utils__WEBPACK_IMPORTED_MODULE_0__["formatDuration"])(duration)}</td>
+            <td class="film-details__cell">${Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["formatDuration"])(duration)}</td>
           </tr>
           <tr class="film-details__row">
             <td class="film-details__term">Country</td>
@@ -388,26 +419,20 @@ const createFilmDetailsPopupTemplate = (film) => {
   );
 };
 
-class FilmDetailsPopup {
+class FilmDetailsPopup extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(film) {
-    this._film = film;
+    super();
 
-    this._element = null;
+    this._film = film;
   }
 
   getTemplate() {
     return createFilmDetailsPopupTemplate(this._film);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setPopupCloseButtonClickHandler(handler) {
+    this.getElement().querySelector(`.film-details .film-details__close-btn`)
+    .addEventListener(`click`, handler);
   }
 }
 
@@ -424,7 +449,7 @@ class FilmDetailsPopup {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FilmList; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
 
 
 const createFilmListTemplate = () => {
@@ -437,24 +462,10 @@ const createFilmListTemplate = () => {
   );
 };
 
-class FilmList {
-  constructor() {
-    this._element = null;
-  }
+class FilmList extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
   getTemplate() {
     return createFilmListTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
@@ -471,7 +482,7 @@ class FilmList {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return FooterStatistic; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
 
 
 const createFooterStatisticTemplate = (moviesCount) => {
@@ -482,26 +493,15 @@ const createFooterStatisticTemplate = (moviesCount) => {
   );
 };
 
-class FooterStatistic {
+class FooterStatistic extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(moviesCount) {
-    this._moviesCount = moviesCount;
+    super();
 
-    this._element = null;
+    this._moviesCount = moviesCount;
   }
 
   getTemplate() {
     return createFooterStatisticTemplate(this._moviesCount);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
@@ -518,7 +518,7 @@ class FooterStatistic {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return HeaderProfile; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
 
 
 const createHeaderProfileTemplate = (profileRating) => {
@@ -540,26 +540,15 @@ const createHeaderProfileTemplate = (profileRating) => {
   );
 };
 
-class HeaderProfile {
+class HeaderProfile extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(profileRating) {
-    this._profileRating = profileRating;
+    super();
 
-    this._element = null;
+    this._profileRating = profileRating;
   }
 
   getTemplate() {
     return createHeaderProfileTemplate(this._profileRating);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
@@ -576,7 +565,7 @@ class HeaderProfile {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return MainMenu; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
 
 
 const createMainMenuTemplate = (watchStats) => {
@@ -594,26 +583,46 @@ const createMainMenuTemplate = (watchStats) => {
   );
 };
 
-class MainMenu {
+class MainMenu extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(watchStats) {
-    this._watchStats = watchStats;
+    super();
 
-    this._element = null;
+    this._watchStats = watchStats;
   }
 
   getTemplate() {
     return createMainMenuTemplate(this._watchStats);
   }
+}
 
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
 
-  removeElement() {
-    this._element = null;
+/***/ }),
+
+/***/ "./src/components/no-films.js":
+/*!************************************!*\
+  !*** ./src/components/no-films.js ***!
+  \************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return NoFilms; });
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
+
+
+const noFilmsTemplate = () => {
+  return (
+    `<section class="films-list">
+      <h2 class="films-list__title">There are no movies in our database</h2>
+    </section>`
+  );
+};
+
+class NoFilms extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
+
+  getTemplate() {
+    return noFilmsTemplate();
   }
 }
 
@@ -630,7 +639,7 @@ class MainMenu {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return ShowMoreBtn; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
 
 
 const createShowMoreBtnTemplate = () => {
@@ -639,24 +648,14 @@ const createShowMoreBtnTemplate = () => {
   );
 };
 
-class ShowMoreBtn {
-  constructor() {
-    this._element = null;
-  }
+class ShowMoreBtn extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
 
   getTemplate() {
     return createShowMoreBtnTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setClickHandler(handler) {
+    this.getElement().addEventListener(`click`, handler);
   }
 }
 
@@ -667,43 +666,67 @@ class ShowMoreBtn {
 /*!********************************!*\
   !*** ./src/components/sort.js ***!
   \********************************/
-/*! exports provided: default */
+/*! exports provided: SortType, default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SortType", function() { return SortType; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Sort; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
 
+
+const SortType = {
+  DEFAULT: `default`,
+  DATE: `date`,
+  RATING: `rating`
+};
 
 const createSortTemplate = () => {
   return (
     `<ul class="sort">
-      <li><a href="#" class="sort__button sort__button--active">Sort by default</a></li>
-      <li><a href="#" class="sort__button">Sort by date</a></li>
-      <li><a href="#" class="sort__button">Sort by rating</a></li>
+      <li><a href="#" data-sort-type="${SortType.DEFAULT}" class="sort__button sort__button--active">Sort by default</a></li>
+      <li><a href="#" data-sort-type="${SortType.DATE}" class="sort__button">Sort by date</a></li>
+      <li><a href="#" data-sort-type="${SortType.RATING}" class="sort__button">Sort by rating</a></li>
     </ul>`
   );
 };
 
-class Sort {
+class Sort extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor() {
-    this._element = null;
+    super();
+
+    this._currenSortType = SortType.DEFAULT;
   }
 
   getTemplate() {
     return createSortTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
+  getSortType() {
+    return this._currenSortType;
+
   }
 
-  removeElement() {
-    this._element = null;
+  setSortTypeChangeHandler(handler) {
+    console.log(this.getElement())
+    this.getElement().addEventListener(`click`, (evt) => {
+      evt.preventDefault();
+
+      if (evt.target.tagName !== `A`) {
+        return;
+      }
+
+      const sortType = evt.target.dataset.sortType;
+
+      if (this._currenSortType === sortType) {
+        return;
+      }
+
+      this._currenSortType = sortType;
+
+      handler(this._currenSortType);
+    });
   }
 }
 
@@ -720,8 +743,8 @@ class Sort {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Statistic; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
-/* harmony import */ var _consts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../consts */ "./src/consts.js");
+/* harmony import */ var _abstract_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./abstract-component */ "./src/components/abstract-component.js");
+/* harmony import */ var _utils_consts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/consts */ "./src/utils/consts.js");
 
 
 
@@ -754,8 +777,8 @@ const createStatisticTemplate = (films) => {
     films.forEach((film) => {
       duration = duration + film.duration;
     });
-    const hours = parseInt(duration / _consts__WEBPACK_IMPORTED_MODULE_1__["MINUTES_IN_HOUR"], 10);
-    const minutes = duration % _consts__WEBPACK_IMPORTED_MODULE_1__["MINUTES_IN_HOUR"];
+    const hours = parseInt(duration / _utils_consts__WEBPACK_IMPORTED_MODULE_1__["MINUTES_IN_HOUR"], 10);
+    const minutes = duration % _utils_consts__WEBPACK_IMPORTED_MODULE_1__["MINUTES_IN_HOUR"];
     result = {
       hours,
       minutes
@@ -819,96 +842,171 @@ const createStatisticTemplate = (films) => {
   );
 };
 
-class Statistic {
+class Statistic extends _abstract_component__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(films) {
-    this._films = films;
+    super();
 
-    this._element = null;
+    this._films = films;
   }
 
   getTemplate() {
     return createStatisticTemplate(this._films);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = Object(_utils__WEBPACK_IMPORTED_MODULE_0__["createElement"])(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
 
 
 /***/ }),
 
-/***/ "./src/consts.js":
-/*!***********************!*\
-  !*** ./src/consts.js ***!
-  \***********************/
-/*! exports provided: GENRES, DUMMY_TEXTS, POSTERS, TITLES, SMILES, MONTH_NAMES, MINUTES_IN_HOUR, HOURS_IN_DAY, DAYS_IN_MONTH */
+/***/ "./src/controllers/page-controller.js":
+/*!********************************************!*\
+  !*** ./src/controllers/page-controller.js ***!
+  \********************************************/
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GENRES", function() { return GENRES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DUMMY_TEXTS", function() { return DUMMY_TEXTS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "POSTERS", function() { return POSTERS; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TITLES", function() { return TITLES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SMILES", function() { return SMILES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONTH_NAMES", function() { return MONTH_NAMES; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MINUTES_IN_HOUR", function() { return MINUTES_IN_HOUR; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HOURS_IN_DAY", function() { return HOURS_IN_DAY; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DAYS_IN_MONTH", function() { return DAYS_IN_MONTH; });
-const MONTH_NAMES = [
-  `January`,
-  `February`,
-  `March`,
-  `April`,
-  `May`,
-  `June`,
-  `July`,
-  `August`,
-  `September`,
-  `October`,
-  `November`,
-  `December`,
-];
-
-const DUMMY_TEXTS = [
-  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
-  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
-  `Fusce tristique felis at fermentum pharetra.`,
-  `Aliquam id orci ut lectus varius viverra.`,
-  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
-  `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
-  `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
-  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
-  `Aliquam erat volutpat.`,
-  `Nunc fermentum tortor ac porta dapibus.`,
-  `In rutrum ac purus sit amet tempus.`,
-];
-
-const MINUTES_IN_HOUR = 60;
-
-const HOURS_IN_DAY = 24;
-
-const DAYS_IN_MONTH = 30;
-
-const GENRES = [`Action`, `Adventure`, `Animation`, `Biography`, `Comedy`, `Crime`, `Drama`, `Family`, `Fantasy`];
-const POSTERS = [`made-for-each-other.png`, `popeye-meets-sinbad.png`,
-  `sagebrush-trail.jpg`, `santa-claus-conquers-the-martians.jpg`, `the-dance-of-life.jpg`,
-  `the-great-flamarion.jpg`, `the-man-with-the-golden-arm.jpg`];
-const TITLES = [`Made for each other`, `Popeye meets Sinbad`, `Sagenbrush trail`,
-  `Santa Claus conquers the Martians`, `The dance of life`,
-  `The great Flamarion`, `The man with the golden arm`];
-
-const SMILES = [`angry.png`, `puke.png`, `sleeping.png`, `smile.png`];
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return PageController; });
+/* harmony import */ var _components_film_card__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../components/film-card */ "./src/components/film-card.js");
+/* harmony import */ var _components_show_more_btn__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/show-more-btn */ "./src/components/show-more-btn.js");
+/* harmony import */ var _components_film_list__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/film-list */ "./src/components/film-list.js");
+/* harmony import */ var _components_film_card_container__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../components/film-card-container */ "./src/components/film-card-container.js");
+/* harmony import */ var _components_film_details_popup__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../components/film-details-popup */ "./src/components/film-details-popup.js");
+/* harmony import */ var _components_no_films__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/no-films */ "./src/components/no-films.js");
+/* harmony import */ var _components_sort__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ../components/sort */ "./src/components/sort.js");
+/* harmony import */ var _utils_render__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../utils/render */ "./src/utils/render.js");
 
 
+
+
+
+
+
+
+
+
+const SHOWING_CARDS_COUNT_ON_START = 5;
+const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
+
+const siteMain = document.querySelector(`.main`);
+const siteBody = document.querySelector(`body`);
+
+const renderFilmCard = (filmListElement, film) => {
+
+  const onFilmCardClick = () => {
+    Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["render"])(siteBody, filmDetailsPopupComponent, _utils_render__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+    document.addEventListener(`keydown`, onEscKeydown);
+  };
+
+  const onCloseButtonClick = () => {
+    document.querySelector(`body`).removeChild(filmDetailsPopupComponent.getElement());
+    document.removeEventListener(`keydown`, onEscKeydown);
+  };
+
+  const onEscKeydown = (evt) => {
+    const isEscape = evt.key === `Escape` || evt.key === `Esc`;
+
+    if (isEscape) {
+      document.querySelector(`body`).removeChild(filmDetailsPopupComponent.getElement());
+
+      document.removeEventListener(`keydown`, onEscKeydown);
+    }
+  };
+
+  const filmComponent = new _components_film_card__WEBPACK_IMPORTED_MODULE_0__["default"](film);
+  filmComponent.setFilmCardClickHandler(onFilmCardClick);
+
+  const filmDetailsPopupComponent = new _components_film_details_popup__WEBPACK_IMPORTED_MODULE_4__["default"](film);
+  filmDetailsPopupComponent.setPopupCloseButtonClickHandler(onCloseButtonClick);
+
+  Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["render"])(filmListElement, filmComponent, _utils_render__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+};
+
+class PageController {
+  constructor(container) {
+    this._container = container;
+
+    this._sortComponent = new _components_sort__WEBPACK_IMPORTED_MODULE_6__["default"]();
+    this._noFilmsComponent = new _components_no_films__WEBPACK_IMPORTED_MODULE_5__["default"]();
+    this._filmListComponent = new _components_film_list__WEBPACK_IMPORTED_MODULE_2__["default"]();
+    this._filmCardContainerComponent = new _components_film_card_container__WEBPACK_IMPORTED_MODULE_3__["default"]();
+    this._showMoreBtnComponent = new _components_show_more_btn__WEBPACK_IMPORTED_MODULE_1__["default"]();
+  }
+
+  render(films) {
+
+    const renderShowMoreBtn = () => {
+      if (showingFilmCount >= films.length) {
+        return;
+      }
+
+      Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["render"])(filmListElement, this._showMoreBtnComponent, `beforeend`);
+
+      this._showMoreBtnComponent.setClickHandler(() => {
+        const prevFilmCount = showingFilmsCount;
+        showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+        films.slice(prevFilmCount, showingFilmsCount)
+          .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
+        if (showingFilmsCount >= films.length) {
+          Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["remove"])(this._showMoreBtnComponent);
+        }
+      });
+    };
+    const container = this._container;
+
+    const filmsContainer = siteMain.querySelector(`.films`);
+
+    let showingFilmCount = SHOWING_CARDS_COUNT_ON_START;
+
+    if (films.length === 0) {
+      filmsContainer.removeChild(filmsContainer.querySelector(`.films-list`));
+      Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["render"])(filmsContainer, this._noFilmsComponent, _utils_render__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+      return;
+    }
+
+    Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["render"])(container.getElement(), this._sortComponent, _utils_render__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+    Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["render"])(container.getElement(), this._filmListComponent, _utils_render__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+
+    const filmListElement = siteMain.querySelector(`.films-list`);
+    Object(_utils_render__WEBPACK_IMPORTED_MODULE_7__["render"])(filmListElement, this._filmCardContainerComponent, _utils_render__WEBPACK_IMPORTED_MODULE_7__["RenderPosition"].BEFOREEND);
+    const mainFilmsListContainer = filmListElement.querySelector(`.films-list__container`);
+
+    let showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
+    films
+      .slice(0, showingFilmsCount)
+      .forEach((film) => {
+        renderFilmCard(mainFilmsListContainer, film);
+      });
+
+    renderShowMoreBtn();
+
+    // render(filmListElement, showMoreButtonComponent, `beforeend`);
+
+    // showMoreButtonComponent.setClickHandler(() => {
+    //   const prevFilmCount = showingFilmsCount;
+    //   showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+    //   films.slice(prevFilmCount, showingFilmsCount)
+    //     .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
+    //   if (showingFilmsCount >= films.length) {
+    //     remove(showMoreButtonComponent);
+    //   }
+    // });
+
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
+      mainFilmsListContainer.innerHTML = ``;
+
+      films
+        .slice(0, showingFilmsCount)
+        .forEach((film) => {
+          renderFilmCard(mainFilmsListContainer, film);
+        });
+      renderShowMoreBtn();
+    });
+  }
+}
 
 
 /***/ }),
@@ -926,14 +1024,12 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _components_main_menu__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./components/main-menu */ "./src/components/main-menu.js");
 /* harmony import */ var _components_statistic__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./components/statistic */ "./src/components/statistic.js");
 /* harmony import */ var _components_sort__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./components/sort */ "./src/components/sort.js");
-/* harmony import */ var _components_film_card__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/film-card */ "./src/components/film-card.js");
-/* harmony import */ var _components_show_more_btn__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/show-more-btn */ "./src/components/show-more-btn.js");
-/* harmony import */ var _components_film_list__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/film-list */ "./src/components/film-list.js");
-/* harmony import */ var _components_film_card_container__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./components/film-card-container */ "./src/components/film-card-container.js");
-/* harmony import */ var _components_footer_statistic__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./components/footer-statistic */ "./src/components/footer-statistic.js");
-/* harmony import */ var _components_film_details_popup__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./components/film-details-popup */ "./src/components/film-details-popup.js");
-/* harmony import */ var _mock_film_card__WEBPACK_IMPORTED_MODULE_10__ = __webpack_require__(/*! ./mock/film-card */ "./src/mock/film-card.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_11__ = __webpack_require__(/*! ./utils */ "./src/utils.js");
+/* harmony import */ var _components_film_list__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./components/film-list */ "./src/components/film-list.js");
+/* harmony import */ var _components_film_card_container__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./components/film-card-container */ "./src/components/film-card-container.js");
+/* harmony import */ var _components_footer_statistic__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./components/footer-statistic */ "./src/components/footer-statistic.js");
+/* harmony import */ var _controllers_page_controller__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./controllers/page-controller */ "./src/controllers/page-controller.js");
+/* harmony import */ var _mock_film_card__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ./mock/film-card */ "./src/mock/film-card.js");
+/* harmony import */ var _utils_render__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! ./utils/render */ "./src/utils/render.js");
 
 
 
@@ -948,13 +1044,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+const CARDS_COUNT = 10;
 
-
-const CARDS_COUNT = 23;
-const SHOWING_CARDS_COUNT_ON_START = 5;
-const SHOWING_CARDS_COUNT_BY_BUTTON = 5;
-
-const filmCards = Object(_mock_film_card__WEBPACK_IMPORTED_MODULE_10__["generateFilmCards"])(CARDS_COUNT);
+const filmCards = Object(_mock_film_card__WEBPACK_IMPORTED_MODULE_8__["generateFilmCards"])(CARDS_COUNT);
 
 const siteMain = document.querySelector(`.main`);
 
@@ -962,7 +1054,7 @@ const renderHeader = () => {
   const siteHeader = document.querySelector(`.header`);
 
   const profileRating = filmCards.reduce((count, film) => film.isWatched ? count + 1 : count, 0);
-  Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(siteHeader, new _components_header_profile__WEBPACK_IMPORTED_MODULE_0__["default"](profileRating).getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+  Object(_utils_render__WEBPACK_IMPORTED_MODULE_9__["render"])(siteHeader, new _components_header_profile__WEBPACK_IMPORTED_MODULE_0__["default"](profileRating), _utils_render__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
 };
 renderHeader();
 
@@ -975,85 +1067,27 @@ const renderMainMenu = () => {
     };
   };
   const watchStats = getWatchStats();
-  Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(siteMain, new _components_main_menu__WEBPACK_IMPORTED_MODULE_1__["default"](watchStats).getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+  Object(_utils_render__WEBPACK_IMPORTED_MODULE_9__["render"])(siteMain, new _components_main_menu__WEBPACK_IMPORTED_MODULE_1__["default"](watchStats), _utils_render__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
 };
 renderMainMenu();
 
 const renderStatistic = (films) => {
   const mainMenu = siteMain.querySelector(`.main-navigation`);
 
-  Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(mainMenu, new _components_statistic__WEBPACK_IMPORTED_MODULE_2__["default"](films).getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].AFTEREND);
+  Object(_utils_render__WEBPACK_IMPORTED_MODULE_9__["render"])(mainMenu, new _components_statistic__WEBPACK_IMPORTED_MODULE_2__["default"](films), _utils_render__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].AFTEREND);
 };
 renderStatistic(filmCards);
 
-Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(siteMain, new _components_sort__WEBPACK_IMPORTED_MODULE_3__["default"]().getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
-Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(siteMain, new _components_film_list__WEBPACK_IMPORTED_MODULE_6__["default"]().getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+Object(_utils_render__WEBPACK_IMPORTED_MODULE_9__["render"])(siteMain, new _components_sort__WEBPACK_IMPORTED_MODULE_3__["default"](), _utils_render__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
+
+Object(_utils_render__WEBPACK_IMPORTED_MODULE_9__["render"])(siteMain, new _components_film_list__WEBPACK_IMPORTED_MODULE_4__["default"](), _utils_render__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
 const siteFooter = document.querySelector(`.footer`);
-Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(siteFooter, new _components_footer_statistic__WEBPACK_IMPORTED_MODULE_8__["default"](filmCards.length).getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
+Object(_utils_render__WEBPACK_IMPORTED_MODULE_9__["render"])(siteFooter, new _components_footer_statistic__WEBPACK_IMPORTED_MODULE_6__["default"](filmCards.length), _utils_render__WEBPACK_IMPORTED_MODULE_9__["RenderPosition"].BEFOREEND);
 
+const filmsCardContanerComponent = new _components_film_card_container__WEBPACK_IMPORTED_MODULE_5__["default"]();
 
-const renderFilmCard = (filmListElement, film) => {
-
-  const onFilmCardClick = () => {
-    Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(siteFooter, filmDetailsPopupComponent.getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].AFTEREND);
-  };
-
-  const onCloseButtonClick = () => {
-    document.querySelector(`body`).removeChild(filmDetailsPopupComponent.getElement());
-  };
-
-  const filmComponent = new _components_film_card__WEBPACK_IMPORTED_MODULE_4__["default"](film);
-  const filmCardPosterElement = filmComponent.getElement().querySelector(`.film-card__poster`);
-  const filmTitleElement = filmComponent.getElement().querySelector(`.film-card__title`);
-  const filmCommentsElement = filmComponent.getElement().querySelector(`.film-card__comments`);
-
-  filmCardPosterElement.addEventListener(`click`, onFilmCardClick);
-  filmTitleElement.addEventListener(`click`, onFilmCardClick);
-  filmCommentsElement.addEventListener(`click`, onFilmCardClick);
-
-  const filmDetailsPopupComponent = new _components_film_details_popup__WEBPACK_IMPORTED_MODULE_9__["default"](film);
-  const closePopupButton = filmDetailsPopupComponent.getElement().querySelector(`.film-details .film-details__close-btn`);
-
-  closePopupButton.addEventListener(`click`, onCloseButtonClick);
-
-  Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(filmListElement, filmComponent.getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
-};
-
-const renderFilmsLists = (filmsComponent, films) => {
-  Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(filmsComponent.getElement(), new _components_film_list__WEBPACK_IMPORTED_MODULE_6__["default"]().getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
-
-  const filmListElement = siteMain.querySelector(`.films-list`);
-  Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(filmListElement, new _components_film_card_container__WEBPACK_IMPORTED_MODULE_7__["default"]().getElement(), _utils__WEBPACK_IMPORTED_MODULE_11__["RenderPosition"].BEFOREEND);
-  const mainFilmsListContainer = filmListElement.querySelector(`.films-list__container`);
-
-  let showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
-
-  films
-    .slice(0, showingFilmsCount)
-    .forEach((film) => {
-      renderFilmCard(mainFilmsListContainer, film);
-    });
-
-
-  Object(_utils__WEBPACK_IMPORTED_MODULE_11__["render"])(filmListElement, new _components_show_more_btn__WEBPACK_IMPORTED_MODULE_5__["default"]().getElement(), `beforeend`);
-
-  const showMoreButton = filmListElement.querySelector(`.films-list__show-more`);
-
-  showMoreButton.addEventListener(`click`, () => {
-    const prevFilmCount = showingFilmsCount;
-    showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
-
-    films.slice(prevFilmCount, showingFilmsCount)
-      .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
-    if (showingFilmsCount >= films.length) {
-      showMoreButton.remove();
-    }
-  });
-};
-
-const filmsComponent = new _components_film_card_container__WEBPACK_IMPORTED_MODULE_7__["default"]();
-
-renderFilmsLists(filmsComponent, filmCards);
+const pageController = new _controllers_page_controller__WEBPACK_IMPORTED_MODULE_7__["default"](filmsCardContanerComponent);
+pageController.render(filmCards);
 
 
 // const renderExtraFilms = () => {
@@ -1107,8 +1141,8 @@ renderFilmsLists(filmsComponent, filmCards);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateComments", function() { return generateComments; });
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
-/* harmony import */ var _consts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../consts */ "./src/consts.js");
+/* harmony import */ var _utils_common__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/common */ "./src/utils/common.js");
+/* harmony import */ var _utils_consts__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/consts */ "./src/utils/consts.js");
 
 
 
@@ -1121,10 +1155,10 @@ const Comment = {
 
 const generateComment = () => {
   return {
-    emoji: Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getRandomItem"])(EMOJIS),
-    text: Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getRandomItem"])(_consts__WEBPACK_IMPORTED_MODULE_1__["DUMMY_TEXTS"]),
-    author: Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getRandomItem"])(COMMENT_AUTHORS),
-    date: Object(_utils__WEBPACK_IMPORTED_MODULE_0__["getRandomDate"])(Comment.YEAR_MIN, Comment.YEAR_MAX)
+    emoji: Object(_utils_common__WEBPACK_IMPORTED_MODULE_0__["getRandomItem"])(EMOJIS),
+    text: Object(_utils_common__WEBPACK_IMPORTED_MODULE_0__["getRandomItem"])(_utils_consts__WEBPACK_IMPORTED_MODULE_1__["DUMMY_TEXTS"]),
+    author: Object(_utils_common__WEBPACK_IMPORTED_MODULE_0__["getRandomItem"])(COMMENT_AUTHORS),
+    date: Object(_utils_common__WEBPACK_IMPORTED_MODULE_0__["getRandomDate"])(Comment.YEAR_MIN, Comment.YEAR_MAX)
   };
 };
 
@@ -1150,8 +1184,8 @@ const generateComments = (count) => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateFilmCard", function() { return generateFilmCard; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generateFilmCards", function() { return generateFilmCards; });
-/* harmony import */ var _consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../consts */ "./src/consts.js");
-/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils */ "./src/utils.js");
+/* harmony import */ var _utils_consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utils/consts */ "./src/utils/consts.js");
+/* harmony import */ var _utils_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utils/common */ "./src/utils/common.js");
 /* harmony import */ var _comment__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./comment */ "./src/mock/comment.js");
 
 
@@ -1180,7 +1214,7 @@ const Film = {
 };
 
 const getRandomDescription = (description) => {
-  return Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomArray"])(description, Film.DESCRIPTION_SENTENCES_MIN, Film.DESCRIPTION_SENTENCES_MAX).join(` `);
+  return Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomArray"])(description, Film.DESCRIPTION_SENTENCES_MIN, Film.DESCRIPTION_SENTENCES_MAX).join(` `);
 };
 
 const getRandomRating = () => {
@@ -1190,7 +1224,7 @@ const getRandomRating = () => {
 };
 
 const getCommentsCount = () => {
-  return Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomIntegerNumber"])(Film.COMMENTS_MIN, Film.COMMENTS_MAX);
+  return Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomIntegerNumber"])(Film.COMMENTS_MIN, Film.COMMENTS_MAX);
 };
 const directors = [`Woody Allen`, `Pedro Almodóvar`, `Rick Alverson`, `Robert Altman`];
 const writers = [`Jane Austen`, `William Blake`, `Geoffrey Chaucer`, `Charles Dickens `, `John Donne`];
@@ -1200,23 +1234,23 @@ const countries = [`China`, `USA`, `Germany`, `Russia`, `Poland`];
 const generateFilmCard = () => {
 
   return {
-    poster: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(_consts__WEBPACK_IMPORTED_MODULE_0__["POSTERS"]),
-    age: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomIntegerNumber"])(Film.AGE_MIN, Film.AGE_MAX),
-    title: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(_consts__WEBPACK_IMPORTED_MODULE_0__["TITLES"]),
-    originalTitle: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(_consts__WEBPACK_IMPORTED_MODULE_0__["TITLES"]),
+    poster: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(_utils_consts__WEBPACK_IMPORTED_MODULE_0__["POSTERS"]),
+    age: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomIntegerNumber"])(Film.AGE_MIN, Film.AGE_MAX),
+    title: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(_utils_consts__WEBPACK_IMPORTED_MODULE_0__["TITLES"]),
+    originalTitle: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(_utils_consts__WEBPACK_IMPORTED_MODULE_0__["TITLES"]),
     rating: getRandomRating(),
-    duration: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomIntegerNumber"])(Film.DURATION_MIN, Film.DURATION_MAX),
-    genres: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItems"])(_consts__WEBPACK_IMPORTED_MODULE_0__["GENRES"]),
-    description: getRandomDescription(_consts__WEBPACK_IMPORTED_MODULE_0__["DUMMY_TEXTS"]),
-    director: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(directors),
-    writers: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItems"])(writers),
-    actors: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItems"])(actors),
+    duration: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomIntegerNumber"])(Film.DURATION_MIN, Film.DURATION_MAX),
+    genres: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItems"])(_utils_consts__WEBPACK_IMPORTED_MODULE_0__["GENRES"]),
+    description: getRandomDescription(_utils_consts__WEBPACK_IMPORTED_MODULE_0__["DUMMY_TEXTS"]),
+    director: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(directors),
+    writers: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItems"])(writers),
+    actors: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItems"])(actors),
     comments: Object(_comment__WEBPACK_IMPORTED_MODULE_2__["generateComments"])(getCommentsCount()),
-    release: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomDate"])(Film.RELEASE_YEAR_MIN, Film.RELEASE_YEAR_MAX),
-    country: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(countries),
-    isInWatchList: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomBoolean"])(),
-    isWatched: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomBoolean"])(),
-    isFavorite: Object(_utils__WEBPACK_IMPORTED_MODULE_1__["getRandomBoolean"])(),
+    release: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomDate"])(Film.RELEASE_YEAR_MIN, Film.RELEASE_YEAR_MAX),
+    country: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomItem"])(countries),
+    isInWatchList: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomBoolean"])(),
+    isWatched: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomBoolean"])(),
+    isFavorite: Object(_utils_common__WEBPACK_IMPORTED_MODULE_1__["getRandomBoolean"])(),
   };
 };
 
@@ -1232,16 +1266,15 @@ const generateFilmCards = (count) => {
 
 /***/ }),
 
-/***/ "./src/utils.js":
-/*!**********************!*\
-  !*** ./src/utils.js ***!
-  \**********************/
-/*! exports provided: createElement, formatDuration, getRandomIntegerNumber, getRandomBoolean, getRandomItem, getRandomItems, getRandomDate, getShuffledArray, getRandomArray, RenderPosition, render */
+/***/ "./src/utils/common.js":
+/*!*****************************!*\
+  !*** ./src/utils/common.js ***!
+  \*****************************/
+/*! exports provided: formatDuration, getRandomIntegerNumber, getRandomBoolean, getRandomItem, getRandomItems, getRandomDate, getShuffledArray, getRandomArray */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createElement", function() { return createElement; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "formatDuration", function() { return formatDuration; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomIntegerNumber", function() { return getRandomIntegerNumber; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomBoolean", function() { return getRandomBoolean; });
@@ -1250,9 +1283,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomDate", function() { return getRandomDate; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getShuffledArray", function() { return getShuffledArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "getRandomArray", function() { return getRandomArray; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RenderPosition", function() { return RenderPosition; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
-/* harmony import */ var _consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./consts */ "./src/consts.js");
+/* harmony import */ var _consts__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./consts */ "./src/utils/consts.js");
 
 
 const formatDuration = (duration) => {
@@ -1317,11 +1348,102 @@ const getRandomArray = (array, minLength, maxLength) => {
   .slice(0, getRandomIntegerNumber(minLength, maxLength));
 };
 
+
+
+
+/***/ }),
+
+/***/ "./src/utils/consts.js":
+/*!*****************************!*\
+  !*** ./src/utils/consts.js ***!
+  \*****************************/
+/*! exports provided: GENRES, DUMMY_TEXTS, POSTERS, TITLES, SMILES, MONTH_NAMES, MINUTES_IN_HOUR, HOURS_IN_DAY, DAYS_IN_MONTH */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GENRES", function() { return GENRES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DUMMY_TEXTS", function() { return DUMMY_TEXTS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "POSTERS", function() { return POSTERS; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "TITLES", function() { return TITLES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "SMILES", function() { return SMILES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MONTH_NAMES", function() { return MONTH_NAMES; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "MINUTES_IN_HOUR", function() { return MINUTES_IN_HOUR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "HOURS_IN_DAY", function() { return HOURS_IN_DAY; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "DAYS_IN_MONTH", function() { return DAYS_IN_MONTH; });
+const MONTH_NAMES = [
+  `January`,
+  `February`,
+  `March`,
+  `April`,
+  `May`,
+  `June`,
+  `July`,
+  `August`,
+  `September`,
+  `October`,
+  `November`,
+  `December`,
+];
+
+const DUMMY_TEXTS = [
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit.`,
+  `Cras aliquet varius magna, non porta ligula feugiat eget.`,
+  `Fusce tristique felis at fermentum pharetra.`,
+  `Aliquam id orci ut lectus varius viverra.`,
+  `Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.`,
+  `Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.`,
+  `Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.`,
+  `Sed sed nisi sed augue convallis suscipit in sed felis.`,
+  `Aliquam erat volutpat.`,
+  `Nunc fermentum tortor ac porta dapibus.`,
+  `In rutrum ac purus sit amet tempus.`,
+];
+
+const MINUTES_IN_HOUR = 60;
+
+const HOURS_IN_DAY = 24;
+
+const DAYS_IN_MONTH = 30;
+
+const GENRES = [`Action`, `Adventure`, `Animation`, `Biography`, `Comedy`, `Crime`, `Drama`, `Family`, `Fantasy`];
+const POSTERS = [`made-for-each-other.png`, `popeye-meets-sinbad.png`,
+  `sagebrush-trail.jpg`, `santa-claus-conquers-the-martians.jpg`, `the-dance-of-life.jpg`,
+  `the-great-flamarion.jpg`, `the-man-with-the-golden-arm.jpg`];
+const TITLES = [`Made for each other`, `Popeye meets Sinbad`, `Sagenbrush trail`,
+  `Santa Claus conquers the Martians`, `The dance of life`,
+  `The great Flamarion`, `The man with the golden arm`];
+
+const SMILES = [`angry.png`, `puke.png`, `sleeping.png`, `smile.png`];
+
+
+
+
+/***/ }),
+
+/***/ "./src/utils/render.js":
+/*!*****************************!*\
+  !*** ./src/utils/render.js ***!
+  \*****************************/
+/*! exports provided: createElement, remove, RenderPosition, render */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createElement", function() { return createElement; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "remove", function() { return remove; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "RenderPosition", function() { return RenderPosition; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 const createElement = (template) => {
   const newElement = document.createElement(`div`);
   newElement.innerHTML = template;
 
   return newElement.firstChild;
+};
+
+const remove = (component) => {
+  component.getElement().remove();
+  component.removeElement();
 };
 
 const RenderPosition = {
@@ -1330,16 +1452,16 @@ const RenderPosition = {
   AFTEREND: `after`
 };
 
-const render = (container, element, place) => {
+const render = (container, component, place) => {
   switch (place) {
     case RenderPosition.AFTERBEGIN:
-      container.prepend(element);
+      container.prepend(component.getElement());
       break;
     case RenderPosition.BEFOREEND:
-      container.append(element);
+      container.append(component.getElement());
       break;
     case RenderPosition.AFTEREND:
-      container.after(element);
+      container.after(component.getElement());
   }
 };
 

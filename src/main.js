@@ -1,7 +1,6 @@
 import HeaderProfileComponent from './components/header-profile';
 import MainMenuComponent from './components/main-menu';
 import StatisticComponent from './components/statistic';
-import SortComponent from './components/sort';
 import FilmListComponent from './components/film-list';
 import FilmCardContainerComponent from './components/film-card-container';
 import FooterStatisticComponent from './components/footer-statistic';
@@ -45,8 +44,6 @@ const renderStatistic = (films) => {
   render(mainMenu, new StatisticComponent(films), RenderPosition.AFTEREND);
 };
 renderStatistic(filmCards);
-
-render(siteMain, new SortComponent(), RenderPosition.BEFOREEND);
 
 render(siteMain, new FilmListComponent(), RenderPosition.BEFOREEND);
 const siteFooter = document.querySelector(`.footer`);
