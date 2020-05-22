@@ -4,6 +4,7 @@ import FilmListComponent from '../components/film-list';
 import FilmCardContainerComponent from '../components/film-card-container';
 import FilmDetailsPopupComponent from '../components/film-details-popup';
 import NoFilmsComponent from '../components/no-films';
+import SortComponent, {SortType} from '../components/sort';
 import {render, RenderPosition, remove} from '../utils/render';
 
 
@@ -44,10 +45,30 @@ const renderFilmCard = (filmListElement, film) => {
   render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
 
+const getSortedFilms = (tasks, sortType, from, to) => {
+  let sorteFilms = [];
+  const showingTasks = tasks.slice();
+
+  switch (sortType) {
+    case SortType.DATE:
+      sorteFilms = showingTasks.sort((a, b) => a.release - b.release);
+      break;
+    case SortType.RATING:
+      sorteFilms = showingTasks.sort((a, b) => b.rating - a.rating);
+      break;
+    case SortType.DEFAULT:
+      sorteFilms = showingTasks;
+      break;
+  }
+
+  return sorteFilms.slice(from, to);
+};
+
 export default class PageController {
   constructor(container) {
     this._container = container;
 
+    this._sortComponent = new SortComponent();
     this._noFilmsComponent = new NoFilmsComponent();
     this._filmListComponent = new FilmListComponent();
     this._filmCardContainerComponent = new FilmCardContainerComponent();
@@ -55,15 +76,37 @@ export default class PageController {
   }
 
   render(films) {
+    const renderShowMoreBtn = () => {
+      if (showingFilmCount >= films.length) {
+        return;
+      }
+
+      render(filmListElement, this._showMoreBtnComponent, `beforeend`);
+
+      this._showMoreBtnComponent.setClickHandler(() => {
+        const prevFilmCount = showingFilmsCount;
+        showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+
+        films.slice(prevFilmCount, showingFilmsCount)
+          .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
+        if (showingFilmsCount >= films.length) {
+          remove(this._showMoreBtnComponent);
+        }
+      });
+    };
     const container = this._container;
 
     const filmsContainer = siteMain.querySelector(`.films`);
+
+    let showingFilmCount = SHOWING_CARDS_COUNT_ON_START;
 
     if (films.length === 0) {
       filmsContainer.removeChild(filmsContainer.querySelector(`.films-list`));
       render(filmsContainer, this._noFilmsComponent, RenderPosition.BEFOREEND);
       return;
     }
+
+    render(container.getElement(), this._sortComponent, RenderPosition.BEFOREEND);
     render(container.getElement(), this._filmListComponent, RenderPosition.BEFOREEND);
 
     const filmListElement = siteMain.querySelector(`.films-list`);
@@ -71,27 +114,28 @@ export default class PageController {
     const mainFilmsListContainer = filmListElement.querySelector(`.films-list__container`);
 
     let showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
-
     films
       .slice(0, showingFilmsCount)
       .forEach((film) => {
         renderFilmCard(mainFilmsListContainer, film);
       });
 
+    renderShowMoreBtn();
 
-    const showMoreButtonComponent = this._showMoreBtnComponent;
+    render(filmsContainer, this._sortComponent, RenderPosition.BEFOREBEGIN);
 
-    render(filmListElement, showMoreButtonComponent, `beforeend`);
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
+      const sortedFilms = getSortedFilms(films, sortType, 0, showingFilmsCount);
 
-    showMoreButtonComponent.setClickHandler(() => {
-      const prevFilmCount = showingFilmsCount;
-      showingFilmsCount = showingFilmsCount + SHOWING_CARDS_COUNT_BY_BUTTON;
+      mainFilmsListContainer.innerHTML = ``;
 
-      films.slice(prevFilmCount, showingFilmsCount)
-        .forEach((film) => renderFilmCard(mainFilmsListContainer, film));
-      if (showingFilmsCount >= films.length) {
-        remove(showMoreButtonComponent);
-      }
+      sortedFilms
+        .slice(0, showingFilmsCount)
+        .forEach((film) => {
+          renderFilmCard(mainFilmsListContainer, film);
+        });
+      renderShowMoreBtn();
     });
   }
 }
