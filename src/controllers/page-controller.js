@@ -45,23 +45,23 @@ const renderFilmCard = (filmListElement, film) => {
   render(filmListElement, filmComponent, RenderPosition.BEFOREEND);
 };
 
-const getSortedFilms = (tasks, sortType, from, to) => {
-  let sorteFilms = [];
-  const showingTasks = tasks.slice();
+const getSortedFilms = (films, sortType, from, to) => {
+  let sortedFilms = [];
+  const showingFilms = films.slice();
 
   switch (sortType) {
     case SortType.DATE:
-      sorteFilms = showingTasks.sort((a, b) => a.release - b.release);
+      sortedFilms = showingFilms.sort((a, b) => b.release - a.release);
       break;
     case SortType.RATING:
-      sorteFilms = showingTasks.sort((a, b) => b.rating - a.rating);
+      sortedFilms = showingFilms.sort((a, b) => b.rating - a.rating);
       break;
     case SortType.DEFAULT:
-      sorteFilms = showingTasks;
+      sortedFilms = showingFilms;
       break;
   }
 
-  return sorteFilms.slice(from, to);
+  return sortedFilms.slice(from, to);
 };
 
 export default class PageController {
@@ -126,7 +126,7 @@ export default class PageController {
 
     this._sortComponent.setSortTypeChangeHandler((sortType) => {
       showingFilmsCount = SHOWING_CARDS_COUNT_ON_START;
-      const sortedFilms = getSortedFilms(films, sortType, 0, showingFilmsCount);
+      const sortedFilms = getSortedFilms(films, sortType, 0, films.length);
 
       mainFilmsListContainer.innerHTML = ``;
 
